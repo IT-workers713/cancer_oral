@@ -1,6 +1,9 @@
-flask
-gunicorn
-tensorflow-cpu==2.13.0
-opencv-python-headless
-numpy
-pillow
+flask==3.0.3
+gunicorn==22.0.0
+
+# TensorFlow compatible Python 3.11
+tensorflow==2.13.0
+
+opencv-python-headless==4.10.0.84
+numpy==1.24.3
+pillow==10.4.0
