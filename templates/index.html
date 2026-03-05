@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Détection de Cancer Oral</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <div class="max-w-6xl mx-auto p-6">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold">🩺 Détection de Cancer Oral</h1>
+        <p class="text-slate-300">Upload → Probabilité → Grad-CAM → Cadre vert (localisation)</p>
+      </div>
+      <a href="/health" class="text-sm text-slate-300 hover:text-white underline">Health</a>
+    </div>
+
+    <div class="mt-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+      <form method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-3 items-start md:items-end">
+        <div class="w-full">
+          <label class="block text-sm text-slate-300 mb-2">Choisir une image (jpg/png)</label>
+          <input type="file" name="file" accept=".jpg,.jpeg,.png"
+                 class="block w-full text-sm text-slate-200 file:mr-4 file:py-2 file:px-4
+                        file:rounded-xl file:border-0 file:text-sm file:font-semibold
+                        file:bg-slate-800 file:text-slate-100 hover:file:bg-slate-700
+                        bg-slate-950/40 border border-slate-800 rounded-xl p-2">
+        </div>
+        <button type="submit"
+                class="px-5 py-2 rounded-xl bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400">
+          Analyser
+        </button>
+      </form>
+
+      {% if error %}
+        <div class="mt-4 p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-200">
+          {{ error }}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if resultat %}
+      <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <h2 class="text-lg font-semibold mb-3">Image originale</h2>
+          <img src="{{ original_image }}" class="w-full rounded-xl border border-slate-800" />
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-3 rounded-xl bg-slate-950/40 border border-slate-800">
+              <div class="text-xs text-slate-400">Résultat</div>
+              <div class="text-lg font-bold">{{ resultat }}</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950/40 border border-slate-800">
+              <div class="text-xs text-slate-400">Prob Cancer</div>
+              <div class="text-lg font-bold">{{ prob_cancer }}%</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950/40 border border-slate-800">
+              <div class="text-xs text-slate-400">Prob Sain</div>
+              <div class="text-lg font-bold">{{ prob_non_cancer }}%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <h2 class="text-lg font-semibold mb-3">Grad-CAM + cadre vert</h2>
+          <img src="{{ overlay_image }}" class="w-full rounded-xl border border-slate-800" />
+          <p class="mt-3 text-sm text-slate-300">
+            Les zones rouges = régions influentes ; le cadre vert = zone suspecte (heatmap seuillée).
+          </p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="mt-10 text-xs text-slate-500">
+      ⚠️ Ceci est une localisation faible (Grad-CAM) basée sur un modèle de classification, pas un vrai detector (YOLO/SSD).
+    </div>
+  </div>
+</body>
+</html>
